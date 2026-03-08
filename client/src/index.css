@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { @apply border-surface-border; }
+  body { @apply bg-surface text-slate-100 font-sans; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-surface-card; }
+  ::-webkit-scrollbar-thumb { @apply bg-surface-muted rounded-full; }
+}
+
+@layer components {
+  /* ── Glass Card ─────────────────────────────────────────── */
+  .glass-card {
+    @apply bg-surface-card/80 backdrop-blur-md border border-surface-border rounded-2xl;
+  }
+
+  /* ── Primary Button ─────────────────────────────────────── */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5
+           bg-gradient-brand text-white font-semibold rounded-xl
+           hover:opacity-90 active:scale-95 transition-all duration-200
+           disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-brand-500/20;
+  }
+
+  /* ── Secondary Ghost Button ─────────────────────────────── */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5
+           border border-surface-border text-slate-300 font-medium rounded-xl
+           hover:bg-surface-card hover:text-white active:scale-95 transition-all duration-200;
+  }
+
+  /* ── Input Field ─────────────────────────────────────────── */
+  .input {
+    @apply w-full px-4 py-2.5 bg-surface-card border border-surface-border
+           rounded-xl text-slate-100 placeholder-surface-muted
+           focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent
+           transition-all duration-200;
+  }
+
+  /* ── Badge ───────────────────────────────────────────────── */
+  .badge {
+    @apply inline-block px-2.5 py-0.5 text-xs font-semibold rounded-full;
+  }
+  .badge-indigo { @apply badge bg-brand-500/20 text-brand-400; }
+  .badge-green  { @apply badge bg-emerald-500/20 text-emerald-400; }
+  .badge-amber  { @apply badge bg-amber-500/20 text-amber-400; }
+  .badge-rose   { @apply badge bg-rose-500/20 text-rose-400; }
+
+  /* ── Stat Card ───────────────────────────────────────────── */
+  .stat-card {
+    @apply glass-card p-6 flex flex-col gap-2 animate-slide-up;
+  }
+
+  /* ── Section Heading ─────────────────────────────────────── */
+  .section-heading {
+    @apply text-2xl font-bold text-white tracking-tight;
+  }
+}
+
+/* ── Progress bar ─────────────────────────────────────── */
+.progress-bar {
+  @apply h-2 rounded-full bg-surface-border overflow-hidden;
+}
+.progress-bar-fill {
+  @apply h-full rounded-full bg-gradient-brand transition-all duration-700;
+}
+
+/* ── Gradient Text ──────────────────────────────────────── */
+.gradient-text {
+  @apply bg-gradient-to-r from-brand-400 to-purple-400 bg-clip-text text-transparent;
+}
+
+/* ── Page fade-in ───────────────────────────────────────── */
+.page-enter { animation: fadeIn 0.35s ease-in-out; }
