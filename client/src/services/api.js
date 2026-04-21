@@ -77,7 +77,7 @@ export const mentorAPI = {
 
 // ── Resume API ──────────────────────────────────────────────────────────
 export const resumeAPI = {
-    upload: (formData) => api.post('/resume/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+    upload: (formData) => api.post('/resume/upload', formData, { headers: { 'Content-Type': undefined } }),
     analyze: (data) => api.post('/resume/analyze', data),
     history: () => api.get('/resume/history'),
 }

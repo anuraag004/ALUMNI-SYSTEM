@@ -68,10 +68,10 @@ exports.getMentorRequests = async (req, res, next) => {
         const snapshot = await db
             .collection("mentorRequests")
             .where("mentorId", "==", req.user.uid)
-            .orderBy("createdAt", "desc")
             .get();
 
         const requests = snapshot.docs.map((d) => d.data());
+        requests.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
         return successResponse(res, 200, "Mentor requests fetched", requests);
     } catch (err) {
         next(err);

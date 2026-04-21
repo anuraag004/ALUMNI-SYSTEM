@@ -24,6 +24,15 @@ const SOFT_SKILLS = new Set([
     "time management", "collaboration", "adaptability", "creativity", "mentoring",
 ]);
 
+const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const checkSkillMatch = (text, skill) => {
+    const escaped = escapeRegExp(skill);
+    // Matches the skill if surrounded by non-alphanumeric chars or boundaries
+    const pattern = new RegExp(`(^|[^a-z0-9])${escaped}([^a-z0-9]|$)`, 'i');
+    return pattern.test(text);
+};
+
 /**
  * Pull all skill keywords present in the resume text.
  * @param {string} text - Raw text extracted from PDF
@@ -34,10 +43,10 @@ const extractSkills = (text) => {
     const found = new Set();
 
     for (const skill of TECH_SKILLS) {
-        if (lower.includes(skill)) found.add(skill);
+        if (checkSkillMatch(lower, skill)) found.add(skill);
     }
     for (const skill of SOFT_SKILLS) {
-        if (lower.includes(skill)) found.add(skill);
+        if (checkSkillMatch(lower, skill)) found.add(skill);
     }
 
     return Array.from(found);

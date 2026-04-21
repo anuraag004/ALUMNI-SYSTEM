@@ -1,77 +1,207 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Base ──────────────────────────────────────────────── */
 @layer base {
   * { @apply border-surface-border; }
-  body { @apply bg-surface text-slate-100 font-sans; }
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { @apply bg-surface-card; }
-  ::-webkit-scrollbar-thumb { @apply bg-surface-muted rounded-full; }
+  html { scroll-behavior: smooth; }
+  body { @apply bg-surface text-slate-100 font-sans antialiased; }
+
+  ::selection {
+    @apply bg-brand-500/30 text-white;
+  }
+
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { @apply bg-transparent; }
+  ::-webkit-scrollbar-thumb { @apply bg-surface-muted/50 rounded-full hover:bg-surface-muted transition-colors; }
 }
 
+/* ─── Components ────────────────────────────────────────── */
 @layer components {
-  /* ── Glass Card ─────────────────────────────────────────── */
+
+  /* ── Glass Card ──────────────────────────────────────── */
   .glass-card {
-    @apply bg-surface-card/80 backdrop-blur-md border border-surface-border rounded-2xl;
+    @apply bg-surface-card/80 backdrop-blur-xl border border-surface-border/60 rounded-2xl
+           shadow-inner-glow;
   }
 
-  /* ── Primary Button ─────────────────────────────────────── */
+  /* ── Interactive Card (hover lift + glow) ────────────── */
+  .glass-card-interactive {
+    @apply glass-card
+           transition-all duration-300 ease-bounce-in
+           hover:-translate-y-1 hover:shadow-card-hover
+           hover:border-brand-500/20;
+  }
+
+  /* ── Primary Button ─────────────────────────────────── */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5
+    @apply relative inline-flex items-center justify-center gap-2 px-6 py-2.5
            bg-gradient-brand text-white font-semibold rounded-xl
-           hover:opacity-90 active:scale-95 transition-all duration-200
-           disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-brand-500/20;
+           shadow-lg shadow-brand-500/25
+           transition-all duration-300 ease-bounce-in
+           hover:shadow-glow-brand hover:scale-[1.02] hover:-translate-y-0.5
+           active:scale-[0.98] active:shadow-none
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:translate-y-0
+           overflow-hidden;
+  }
+  .btn-primary::after {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  }
+  .btn-primary:hover::after {
+    @apply opacity-100;
+    animation: shimmer 1.5s linear;
   }
 
-  /* ── Secondary Ghost Button ─────────────────────────────── */
+  /* ── Secondary Button ───────────────────────────────── */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-2.5
+           bg-surface-elevated text-slate-200 font-semibold rounded-xl
+           border border-brand-500/20
+           transition-all duration-300 ease-bounce-in
+           hover:border-brand-500/40 hover:bg-surface-card hover:text-white
+           hover:shadow-glow-brand hover:scale-[1.02]
+           active:scale-[0.98];
+  }
+
+  /* ── Ghost Button ───────────────────────────────────── */
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5
-           border border-surface-border text-slate-300 font-medium rounded-xl
-           hover:bg-surface-card hover:text-white active:scale-95 transition-all duration-200;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-2.5
+           border border-surface-border/80 text-slate-300 font-medium rounded-xl
+           transition-all duration-300 ease-bounce-in
+           hover:border-slate-500 hover:bg-white/[0.03] hover:text-white
+           hover:scale-[1.02]
+           active:scale-[0.98];
   }
 
-  /* ── Input Field ─────────────────────────────────────────── */
+  /* ── Danger Button ──────────────────────────────────── */
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-2.5
+           bg-rose-500/10 text-rose-400 border border-rose-500/20 font-semibold rounded-xl
+           transition-all duration-300 ease-bounce-in
+           hover:bg-rose-500/20 hover:border-rose-500/40 hover:scale-[1.02]
+           active:scale-[0.98];
+  }
+
+  /* ── Input Field ────────────────────────────────────── */
   .input {
-    @apply w-full px-4 py-2.5 bg-surface-card border border-surface-border
-           rounded-xl text-slate-100 placeholder-surface-muted
-           focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent
-           transition-all duration-200;
+    @apply w-full px-4 py-2.5 bg-surface-card/60 border border-surface-border/60
+           rounded-xl text-slate-100 placeholder-slate-500
+           shadow-inner-glow
+           transition-all duration-300 ease-bounce-in
+           focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500/50
+           focus:bg-surface-card;
   }
 
-  /* ── Badge ───────────────────────────────────────────────── */
+  /* ── Badge ──────────────────────────────────────────── */
   .badge {
-    @apply inline-block px-2.5 py-0.5 text-xs font-semibold rounded-full;
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-semibold rounded-full
+           transition-colors duration-200;
   }
-  .badge-indigo { @apply badge bg-brand-500/20 text-brand-400; }
-  .badge-green  { @apply badge bg-emerald-500/20 text-emerald-400; }
-  .badge-amber  { @apply badge bg-amber-500/20 text-amber-400; }
-  .badge-rose   { @apply badge bg-rose-500/20 text-rose-400; }
+  .badge-indigo { @apply badge bg-brand-500/15 text-brand-400 border border-brand-500/20; }
+  .badge-green  { @apply badge bg-emerald-500/15 text-emerald-400 border border-emerald-500/20; }
+  .badge-amber  { @apply badge bg-amber-500/15 text-amber-400 border border-amber-500/20; }
+  .badge-rose   { @apply badge bg-rose-500/15 text-rose-400 border border-rose-500/20; }
 
-  /* ── Stat Card ───────────────────────────────────────────── */
+  /* ── Stat Card ──────────────────────────────────────── */
   .stat-card {
-    @apply glass-card p-6 flex flex-col gap-2 animate-slide-up;
+    @apply glass-card-interactive p-6 flex flex-col gap-2;
   }
 
-  /* ── Section Heading ─────────────────────────────────────── */
+  /* ── Section Heading ────────────────────────────────── */
   .section-heading {
-    @apply text-2xl font-bold text-white tracking-tight;
+    @apply text-2xl md:text-3xl font-bold text-white tracking-tight font-display;
+  }
+
+  /* ── Page Container ─────────────────────────────────── */
+  .page-container {
+    @apply max-w-7xl mx-auto space-y-8;
   }
 }
 
-/* ── Progress bar ─────────────────────────────────────── */
+/* ─── Utilities ─────────────────────────────────────────── */
+
+/* Progress bar */
 .progress-bar {
-  @apply h-2 rounded-full bg-surface-border overflow-hidden;
+  @apply h-2 rounded-full bg-surface-border/50 overflow-hidden;
 }
 .progress-bar-fill {
-  @apply h-full rounded-full bg-gradient-brand transition-all duration-700;
+  @apply h-full rounded-full bg-gradient-brand transition-all duration-1000 ease-bounce-in;
 }
 
-/* ── Gradient Text ──────────────────────────────────────── */
+/* Gradient Text */
 .gradient-text {
-  @apply bg-gradient-to-r from-brand-400 to-purple-400 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-brand-400 via-purple-400 to-brand-300 bg-clip-text text-transparent;
 }
 
-/* ── Page fade-in ───────────────────────────────────────── */
-.page-enter { animation: fadeIn 0.35s ease-in-out; }
+/* Page entrance */
+.page-enter {
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Staggered children - apply to parent, children get cascading delays */
+.stagger-children > * {
+  opacity: 0;
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 60ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 120ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 180ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 240ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 300ms; }
+.stagger-children > *:nth-child(7) { animation-delay: 360ms; }
+.stagger-children > *:nth-child(8) { animation-delay: 420ms; }
+
+/* Animated gradient border wrapper */
+.gradient-border {
+  position: relative;
+  border-radius: 1rem;
+}
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.4), rgba(139,92,246,0.2), rgba(99,102,241,0.1), rgba(139,92,246,0.4));
+  background-size: 300% 300%;
+  animation: borderFlow 4s ease infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Floating decorative shape */
+.floating-shape {
+  @apply absolute rounded-full opacity-20 blur-3xl pointer-events-none;
+  animation: float 8s ease-in-out infinite;
+}
+
+/* Card shine on hover */
+.card-shine {
+  position: relative;
+  overflow: hidden;
+}
+.card-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.02) 45%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.02) 55%, transparent 60%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+  pointer-events: none;
+}
+.card-shine:hover::after {
+  transform: translateX(100%);
+}
+
+/* Scrollbar for specific containers */
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { @apply bg-surface-muted/30 rounded-full; }

@@ -5,15 +5,20 @@ import { mentorAPI } from '../../services/api'
 import toast from 'react-hot-toast'
 import Loader from '../../components/common/Loader'
 
-const MentorCard = ({ mentor, matchScore, onRequest }) => (
-    <div className="glass-card p-6 hover:border-brand-500/40 transition-all duration-300 animate-fade-in">
+const MentorCard = ({ mentor, matchScore, onRequest, index = 0 }) => (
+    <div className="glass-card-interactive p-6 card-shine group animate-slide-up"
+         style={{ animationDelay: `${index * 60}ms` }}>
         <div className="flex items-start gap-4">
-            <div className="h-14 w-14 rounded-2xl bg-gradient-brand flex items-center justify-center text-xl font-bold text-white uppercase shrink-0">
+            <div className="h-14 w-14 rounded-2xl bg-gradient-brand flex items-center justify-center
+                           text-xl font-bold text-white uppercase shrink-0 shadow-glow-brand/50
+                           group-hover:scale-110 group-hover:rotate-3
+                           transition-all duration-500 ease-bounce-in">
                 {mentor.displayName?.[0]}
             </div>
             <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
-                    <h3 className="font-bold text-white">{mentor.displayName}</h3>
+                    <h3 className="font-bold text-white font-display group-hover:text-brand-300
+                                  transition-colors duration-300">{mentor.displayName}</h3>
                     <div className="flex items-center gap-1.5 shrink-0">
                         <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse-slow" />
                         <span className="text-emerald-400 text-xs font-semibold">{matchScore}% match</span>
@@ -26,7 +31,7 @@ const MentorCard = ({ mentor, matchScore, onRequest }) => (
         </div>
 
         {/* Match score bar */}
-        <div className="mt-4">
+        <div className="mt-5">
             <div className="flex justify-between text-xs text-slate-500 mb-1.5">
                 <span>AI Compatibility Score</span>
                 <span className="text-brand-400 font-semibold">{matchScore}%</span>
@@ -39,16 +44,22 @@ const MentorCard = ({ mentor, matchScore, onRequest }) => (
         {/* Skills */}
         {mentor.skills?.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-4">
-                {mentor.skills.slice(0, 5).map((s) => <span key={s} className="badge bg-surface-border text-slate-300">{s}</span>)}
+                {mentor.skills.slice(0, 5).map((s) => (
+                    <span key={s} className="badge bg-surface-elevated/60 text-slate-300
+                                            border border-surface-border/40">{s}</span>
+                ))}
             </div>
         )}
 
-        {mentor.bio && <p className="text-xs text-slate-400 mt-3 line-clamp-2">{mentor.bio}</p>}
+        {mentor.bio && <p className="text-xs text-slate-400 mt-3 line-clamp-2 leading-relaxed">{mentor.bio}</p>}
 
-        <div className="flex gap-3 mt-5">
-            <button onClick={() => onRequest(mentor)} className="btn-primary flex-1 text-sm">🎯 Request Mentorship</button>
+        <div className="flex gap-3 mt-5 pt-4 border-t border-surface-border/30">
+            <button onClick={() => onRequest(mentor)} className="btn-primary flex-1 text-sm">
+                🎯 Request Mentorship
+            </button>
             {mentor.linkedIn && (
-                <a href={mentor.linkedIn} target="_blank" rel="noopener noreferrer" className="btn-ghost text-sm px-4">LinkedIn ↗</a>
+                <a href={mentor.linkedIn} target="_blank" rel="noopener noreferrer"
+                   className="btn-ghost text-sm px-4">LinkedIn ↗</a>
             )}
         </div>
     </div>
@@ -69,23 +80,46 @@ const RequestModal = ({ mentor, onClose, onSubmit }) => {
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
-            <div className="glass-card p-8 w-full max-w-md animate-slide-up" onClick={(e) => e.stopPropagation()}>
-                <h2 className="font-bold text-white text-lg mb-1">Request Mentorship</h2>
-                <p className="text-slate-400 text-sm mb-6">Sending request to <span className="text-brand-400">{mentor.displayName}</span></p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4
+                       bg-black/70 backdrop-blur-sm animate-fade-in" onClick={onClose}>
+            <div className="glass-card p-8 w-full max-w-md animate-scale-in shadow-card-elevated"
+                 onClick={(e) => e.stopPropagation()}>
+                {/* Header */}
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="h-12 w-12 rounded-2xl bg-gradient-brand flex items-center justify-center
+                                   font-bold text-white text-lg shadow-glow-brand">
+                        {mentor.displayName?.[0]}
+                    </div>
+                    <div>
+                        <h2 className="font-bold text-white text-lg font-display">Request Mentorship</h2>
+                        <p className="text-slate-400 text-sm">
+                            Sending request to <span className="text-brand-400 font-medium">{mentor.displayName}</span>
+                        </p>
+                    </div>
+                </div>
+
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-slate-300 mb-1.5">Your Message *</label>
                         <textarea value={msg} onChange={(e) => setMsg(e.target.value)} rows={4} required
-                            className="input resize-none" placeholder="Introduce yourself and explain what you're looking for…" />
+                            className="input resize-none"
+                            placeholder="Introduce yourself and explain what you're looking for…" />
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-slate-300 mb-1.5">Topics (comma-separated)</label>
-                        <input value={topics} onChange={(e) => setTop(e.target.value)} className="input" placeholder="Career advice, Interview prep, React…" />
+                        <input value={topics} onChange={(e) => setTop(e.target.value)} className="input"
+                               placeholder="Career advice, Interview prep, React…" />
                     </div>
                     <div className="flex gap-3 pt-2">
                         <button type="button" onClick={onClose} className="btn-ghost flex-1">Cancel</button>
-                        <button type="submit" disabled={loading} className="btn-primary flex-1">{loading ? 'Sending…' : 'Send Request'}</button>
+                        <button type="submit" disabled={loading} className="btn-primary flex-1">
+                            {loading ? (
+                                <span className="flex items-center gap-2">
+                                    <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    Sending…
+                                </span>
+                            ) : 'Send Request'}
+                        </button>
                     </div>
                 </form>
             </div>
@@ -115,9 +149,11 @@ const MentorSearch = () => {
     return (
         <DashboardLayout>
             <div className="max-w-6xl mx-auto space-y-6">
-                <div>
+                <div className="animate-slide-up">
                     <h1 className="section-heading">🎯 AI Mentor Matching</h1>
-                    <p className="text-slate-400 mt-1">These alumni are ranked by how closely their background matches your profile using cosine similarity.</p>
+                    <p className="text-slate-400 mt-2">
+                        These alumni are ranked by how closely their background matches your profile using cosine similarity.
+                    </p>
                 </div>
 
                 {loading
@@ -125,15 +161,19 @@ const MentorSearch = () => {
                     : recs.length === 0
                         ? (
                             <div className="text-center py-24 glass-card">
-                                <p className="text-5xl mb-4">🔍</p>
-                                <p className="text-white font-semibold text-lg">No mentor matches yet</p>
-                                <p className="text-slate-400 text-sm mt-2">Complete your profile with skills and interests for better recommendations.</p>
+                                <div className="text-5xl mb-4 animate-float inline-block">🔍</div>
+                                <p className="text-white font-semibold text-lg font-display">No mentor matches yet</p>
+                                <p className="text-slate-400 text-sm mt-2">
+                                    Complete your profile with skills and interests for better recommendations.
+                                </p>
                             </div>
                         )
                         : (
                             <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
-                                {recs.map(({ mentor, matchScore }) => (
-                                    <MentorCard key={mentor.uid} mentor={mentor} matchScore={matchScore} onRequest={setSelected} />
+                                {recs.map(({ mentor, matchScore }, i) => (
+                                    <MentorCard key={mentor.uid} mentor={mentor}
+                                               matchScore={matchScore} index={i}
+                                               onRequest={setSelected} />
                                 ))}
                             </div>
                         )

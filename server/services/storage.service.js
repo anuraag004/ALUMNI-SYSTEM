@@ -1,50 +1,69 @@
-/**
- * services/storage.service.js
- * Firebase Storage upload/download helpers.
- */
-
 const { bucket } = require("../config/firebase");
+const fs = require('fs/promises');
+const fsSync = require('fs');
+const path = require('path');
 
-/**
- * Upload a Buffer to Firebase Storage.
- * @param {Buffer} buffer
- * @param {string} destination - Path within the bucket, e.g. 'resumes/uid/file.pdf'
- * @param {string} contentType - MIME type
- * @returns {Promise<string>} Public download URL
- */
-const uploadBuffer = async (buffer, destination, contentType = "application/octet-stream") => {
-    const file = bucket.file(destination);
+const UPLOADS_DIR = path.join(__dirname, '../uploads');
 
-    await file.save(buffer, {
-        metadata: { contentType },
-        resumable: false,
-    });
+// Ensure local uploads directory exists
+if (!fsSync.existsSync(UPLOADS_DIR)) {
+    fsSync.mkdirSync(UPLOADS_DIR, { recursive: true });
+}
 
-    // Make the file publicly readable
-    await file.makePublic();
-
-    return `https://storage.googleapis.com/${bucket.name}/${destination}`;
+const getLocalPath = (destination) => {
+    const safeDest = destination.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+    return path.join(UPLOADS_DIR, safeDest);
 };
 
 /**
- * Download a file from Firebase Storage by its public URL and return a Buffer.
- * @param {string} publicUrl
- * @returns {Promise<Buffer>}
+ * Upload a Buffer to Firebase Storage, with fallback to local disk.
+ */
+const uploadBuffer = async (buffer, destination, contentType = "application/octet-stream") => {
+    try {
+        const file = bucket.file(destination);
+        await file.save(buffer, {
+            metadata: { contentType },
+            resumable: false,
+        });
+        await file.makePublic();
+        return `https://storage.googleapis.com/${bucket.name}/${destination}`;
+    } catch (err) {
+        if (err.message && err.message.includes('exist')) {
+            console.warn('[STORAGE] Firebase bucket not configured correctly. Falling back to local disk storage.');
+        } else {
+            console.warn('[STORAGE] Firebase upload error:', err.message, '- Falling back to local disk storage.');
+        }
+        const filePath = getLocalPath(destination);
+        await fs.writeFile(filePath, buffer);
+        return `local://${destination}`;
+    }
+};
+
+/**
+ * Download a file.
  */
 const downloadBuffer = async (publicUrl) => {
-    // Extract the path relative to the bucket root from the public URL
+    if (publicUrl.startsWith('local://')) {
+        const destination = publicUrl.replace('local://', '');
+        return await fs.readFile(getLocalPath(destination));
+    }
+
     const bucketPrefix = `https://storage.googleapis.com/${bucket.name}/`;
     const filePath = publicUrl.replace(bucketPrefix, "");
-
     const [buffer] = await bucket.file(filePath).download();
     return buffer;
 };
 
 /**
- * Delete a file from Firebase Storage by its public URL.
- * @param {string} publicUrl
+ * Delete a file.
  */
 const deleteFile = async (publicUrl) => {
+    if (publicUrl.startsWith('local://')) {
+        const destination = publicUrl.replace('local://', '');
+        await fs.unlink(getLocalPath(destination)).catch(() => {});
+        return;
+    }
+
     const bucketPrefix = `https://storage.googleapis.com/${bucket.name}/`;
     const filePath = publicUrl.replace(bucketPrefix, "");
     await bucket.file(filePath).delete();

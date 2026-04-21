@@ -33,12 +33,12 @@ const profileToText = (profile) => {
  * @returns {Promise<Array<{ mentor: object, matchScore: number }>>}
  */
 const recommend = async (studentProfile, topN = 5) => {
-    // Fetch all verified, mentor-available alumni
+    // Fetch alumni (Verification & Availability filters commented out for testing)
     const snapshot = await db
         .collection("users")
         .where("role", "==", "alumni")
-        .where("isVerified", "==", true)
-        .where("isMentorAvailable", "==", true)
+        // .where("isVerified", "==", true)
+        // .where("isMentorAvailable", "==", true)
         .get();
 
     const mentors = snapshot.docs.map((d) => d.data());

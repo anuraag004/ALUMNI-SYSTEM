@@ -54,68 +54,88 @@ const AdminDashboard = () => {
     ]
 
     const statCards = [
-        { label: 'Total Users', value: stats?.totalUsers, icon: '👥', color: 'bg-brand-500/10 text-brand-400' },
-        { label: 'Alumni', value: stats?.totalAlumni, icon: '🎓', color: 'bg-purple-500/10 text-purple-400' },
-        { label: 'Active Jobs', value: stats?.activeJobs, icon: '💼', color: 'bg-emerald-500/10 text-emerald-400' },
-        { label: 'Events Hosted', value: stats?.totalEvents, icon: '📅', color: 'bg-amber-500/10 text-amber-400' },
-        { label: 'Resume Analyses', value: stats?.resumeAnalysesCompleted, icon: '📄', color: 'bg-cyan-500/10 text-cyan-400' },
-        { label: 'Pending Requests', value: stats?.pendingMentorRequests, icon: '⏳', color: 'bg-rose-500/10 text-rose-400' },
+        { label: 'Total Users', value: stats?.totalUsers, icon: '👥', color: 'bg-brand-500/10' },
+        { label: 'Alumni', value: stats?.totalAlumni, icon: '🎓', color: 'bg-purple-500/10' },
+        { label: 'Active Jobs', value: stats?.activeJobs, icon: '💼', color: 'bg-emerald-500/10' },
+        { label: 'Events Hosted', value: stats?.totalEvents, icon: '📅', color: 'bg-amber-500/10' },
+        { label: 'Resume Analyses', value: stats?.resumeAnalysesCompleted, icon: '📄', color: 'bg-cyan-500/10' },
+        { label: 'Pending Requests', value: stats?.pendingMentorRequests, icon: '⏳', color: 'bg-rose-500/10' },
     ]
 
     return (
         <DashboardLayout>
-            <div className="space-y-8 max-w-7xl mx-auto">
-                <div className="flex items-center justify-between">
+            <div className="page-container">
+                <div className="flex items-center justify-between animate-slide-up">
                     <h1 className="section-heading">Admin Dashboard</h1>
                     <span className="badge-amber">Admin</span>
                 </div>
 
                 {/* Stat cards */}
-                <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 stagger-children">
                     {statCards.map((s) => (
-                        <div key={s.label} className="stat-card text-center">
-                            <span className={`h-10 w-10 rounded-xl flex items-center justify-center text-xl mx-auto ${s.color}`}>{s.icon}</span>
-                            <p className="text-2xl font-bold text-white mt-2">{s.value ?? '—'}</p>
+                        <div key={s.label} className="stat-card text-center group">
+                            <span className={`h-12 w-12 rounded-2xl flex items-center justify-center
+                                            text-xl mx-auto ${s.color} border border-white/5
+                                            group-hover:scale-110 group-hover:rotate-3
+                                            transition-all duration-500 ease-bounce-in`}>{s.icon}</span>
+                            <p className="text-2xl font-bold text-white mt-2 font-display
+                                        group-hover:text-brand-300 transition-colors duration-300">
+                                {s.value ?? '—'}
+                            </p>
                             <p className="text-xs text-slate-400 mt-0.5">{s.label}</p>
                         </div>
                     ))}
                 </div>
 
                 {/* Tab bar */}
-                <div className="flex gap-2 border-b border-surface-border pb-0">
+                <div className="flex gap-1 bg-surface-elevated/40 rounded-xl p-1 border border-surface-border/30 w-fit">
                     {['overview', 'users'].map((t) => (
                         <button key={t} onClick={() => setTab(t)}
-                            className={`px-4 py-2.5 text-sm font-semibold capitalize rounded-t-lg transition-all ${tab === t ? 'bg-surface-card border border-b-0 border-surface-border text-white' : 'text-slate-400 hover:text-white'
-                                }`}>{t}</button>
+                            className={`px-5 py-2.5 text-sm font-semibold capitalize rounded-lg
+                                       transition-all duration-300 ease-bounce-in
+                                       ${tab === t
+                                           ? 'bg-gradient-brand text-white shadow-glow-brand'
+                                           : 'text-slate-400 hover:text-white hover:bg-surface-card'
+                                       }`}>{t}</button>
                     ))}
                 </div>
 
                 {tab === 'overview' && (
-                    <div className="grid lg:grid-cols-2 gap-6">
-                        <div className="glass-card p-6">
-                            <h2 className="font-bold text-white mb-4">Platform Overview</h2>
+                    <div className="grid lg:grid-cols-2 gap-6 animate-fade-in">
+                        <div className="glass-card-interactive p-6">
+                            <h2 className="font-bold text-white mb-5 font-display">Platform Overview</h2>
                             <ResponsiveContainer width="100%" height={240}>
                                 <BarChart data={barData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                                     <XAxis dataKey="name" tick={{ fill: '#94a3b8', fontSize: 12 }} />
                                     <YAxis tick={{ fill: '#94a3b8', fontSize: 12 }} />
-                                    <Tooltip contentStyle={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 12, color: '#f1f5f9' }} />
-                                    <Bar dataKey="value" fill="url(#grad)" radius={[6, 6, 0, 0]} />
+                                    <Tooltip contentStyle={{
+                                        background: '#111827', border: '1px solid #1e293b',
+                                        borderRadius: 12, color: '#f1f5f9',
+                                        boxShadow: '0 8px 30px rgba(0,0,0,0.3)'
+                                    }} />
+                                    <Bar dataKey="value" fill="url(#grad)" radius={[8, 8, 0, 0]} />
                                     <defs>
                                         <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="0%" stopColor="#6366f1" /><stop offset="100%" stopColor="#8b5cf6" />
+                                            <stop offset="0%" stopColor="#818cf8" />
+                                            <stop offset="100%" stopColor="#6366f1" />
                                         </linearGradient>
                                     </defs>
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
-                        <div className="glass-card p-6 flex flex-col items-center">
-                            <h2 className="font-bold text-white mb-4 self-start">User Distribution</h2>
+                        <div className="glass-card-interactive p-6 flex flex-col items-center">
+                            <h2 className="font-bold text-white mb-5 self-start font-display">User Distribution</h2>
                             <ResponsiveContainer width="100%" height={240}>
                                 <PieChart>
-                                    <Pie data={pieData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={4} dataKey="value">
+                                    <Pie data={pieData} cx="50%" cy="50%" innerRadius={60} outerRadius={90}
+                                         paddingAngle={4} dataKey="value">
                                         {pieData.map((_, i) => <Cell key={i} fill={COLORS[i]} />)}
                                     </Pie>
-                                    <Tooltip contentStyle={{ background: '#1e293b', border: '1px solid #334155', borderRadius: 12, color: '#f1f5f9' }} />
+                                    <Tooltip contentStyle={{
+                                        background: '#111827', border: '1px solid #1e293b',
+                                        borderRadius: 12, color: '#f1f5f9',
+                                        boxShadow: '0 8px 30px rgba(0,0,0,0.3)'
+                                    }} />
                                     <Legend wrapperStyle={{ color: '#94a3b8', fontSize: 12 }} />
                                 </PieChart>
                             </ResponsiveContainer>
@@ -124,32 +144,58 @@ const AdminDashboard = () => {
                 )}
 
                 {tab === 'users' && (
-                    <div className="glass-card overflow-hidden">
+                    <div className="glass-card overflow-hidden animate-fade-in">
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm">
                                 <thead>
-                                    <tr className="bg-surface-border/30">
+                                    <tr className="bg-surface-elevated/40 border-b border-surface-border/30">
                                         {['Name', 'Email', 'Role', 'Status', 'Actions'].map((h) => (
-                                            <th key={h} className="text-left px-4 py-3 text-slate-400 font-semibold text-xs uppercase tracking-wider">{h}</th>
+                                            <th key={h} className="text-left px-5 py-3.5 text-slate-400
+                                                                  font-semibold text-xs uppercase tracking-wider">{h}</th>
                                         ))}
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-surface-border">
+                                <tbody className="divide-y divide-surface-border/30">
                                     {users.map((u) => (
-                                        <tr key={u.uid} className="hover:bg-surface-border/20 transition-colors">
-                                            <td className="px-4 py-3">
-                                                <div className="flex items-center gap-2">
-                                                    <div className="h-7 w-7 rounded-full bg-gradient-brand flex items-center justify-center text-xs font-bold text-white uppercase">{u.displayName?.[0]}</div>
+                                        <tr key={u.uid} className="hover:bg-surface-elevated/30
+                                                                   transition-colors duration-200 group">
+                                            <td className="px-5 py-3.5">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="h-8 w-8 rounded-full bg-gradient-brand
+                                                                   flex items-center justify-center text-xs
+                                                                   font-bold text-white uppercase
+                                                                   group-hover:scale-105 transition-transform duration-200">
+                                                        {u.displayName?.[0]}
+                                                    </div>
                                                     <span className="font-medium text-white">{u.displayName}</span>
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-3 text-slate-400">{u.email}</td>
-                                            <td className="px-4 py-3"><span className={u.role === 'admin' ? 'badge-amber' : u.role === 'alumni' ? 'badge-indigo' : 'badge-green'}>{u.role}</span></td>
-                                            <td className="px-4 py-3"><span className={u.isVerified ? 'badge-green' : 'badge-amber'}>{u.isVerified ? 'Verified' : 'Pending'}</span></td>
-                                            <td className="px-4 py-3">
-                                                <div className="flex items-center gap-2">
-                                                    {!u.isVerified && <button onClick={() => handleVerify(u.uid)} className="text-xs text-emerald-400 hover:text-emerald-300 font-medium">Verify</button>}
-                                                    <button onClick={() => handleDelete(u.uid)} className="text-xs text-rose-400 hover:text-rose-300 font-medium">Delete</button>
+                                            <td className="px-5 py-3.5 text-slate-400">{u.email}</td>
+                                            <td className="px-5 py-3.5">
+                                                <span className={u.role === 'admin' ? 'badge-amber'
+                                                               : u.role === 'alumni' ? 'badge-indigo' : 'badge-green'}>
+                                                    {u.role}
+                                                </span>
+                                            </td>
+                                            <td className="px-5 py-3.5">
+                                                <span className={u.isVerified ? 'badge-green' : 'badge-amber'}>
+                                                    {u.isVerified ? 'Verified' : 'Pending'}
+                                                </span>
+                                            </td>
+                                            <td className="px-5 py-3.5">
+                                                <div className="flex items-center gap-3">
+                                                    {!u.isVerified && (
+                                                        <button onClick={() => handleVerify(u.uid)}
+                                                            className="text-xs text-emerald-400 hover:text-emerald-300
+                                                                       font-semibold hover:underline transition-all duration-200">
+                                                            Verify
+                                                        </button>
+                                                    )}
+                                                    <button onClick={() => handleDelete(u.uid)}
+                                                        className="text-xs text-rose-400 hover:text-rose-300
+                                                                   font-semibold hover:underline transition-all duration-200">
+                                                        Delete
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>

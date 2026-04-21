@@ -1,0 +1,15 @@
+{
+  "name": "capstone-alumni-platform",
+  "version": "1.0.0",
+  "description": "AI-Powered Alumni Platform",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm run start --prefix server\" \"npm run dev --prefix client\"",
+    "server": "npm run start --prefix server",
+    "client": "npm run dev --prefix client",
+    "install-all": "npm install && npm install --prefix server && npm install --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

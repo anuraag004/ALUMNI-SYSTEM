@@ -1,13 +1,9 @@
-/**
- * controllers/job.controller.js
- */
 const { validationResult } = require("express-validator");
 const { v4: uuidv4 } = require("uuid");
 const { db } = require("../config/firebase");
 const { successResponse, errorResponse, paginatedResponse } = require("../utils/responseHelper");
 const firestoreService = require("../services/firestore.service");
 
-// ── List Jobs ─────────────────────────────────────────────────────────────────
 exports.listJobs = async (req, res, next) => {
     try {
         const { type, skill, page = 1, limit = 10 } = req.query;
@@ -27,7 +23,6 @@ exports.listJobs = async (req, res, next) => {
     }
 };
 
-// ── Get Single Job ────────────────────────────────────────────────────────────
 exports.getJob = async (req, res, next) => {
     try {
         const job = await firestoreService.getDocument("jobs", req.params.id);
@@ -38,7 +33,6 @@ exports.getJob = async (req, res, next) => {
     }
 };
 
-// ── Create Job ────────────────────────────────────────────────────────────────
 exports.createJob = async (req, res, next) => {
     try {
         const errors = validationResult(req);
@@ -67,7 +61,6 @@ exports.createJob = async (req, res, next) => {
     }
 };
 
-// ── Update Job ────────────────────────────────────────────────────────────────
 exports.updateJob = async (req, res, next) => {
     try {
         const job = await firestoreService.getDocument("jobs", req.params.id);
@@ -83,7 +76,6 @@ exports.updateJob = async (req, res, next) => {
     }
 };
 
-// ── Delete Job ────────────────────────────────────────────────────────────────
 exports.deleteJob = async (req, res, next) => {
     try {
         const job = await firestoreService.getDocument("jobs", req.params.id);

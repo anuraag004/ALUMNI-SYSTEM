@@ -33,10 +33,10 @@ const MentorRequests = () => {
     return (
         <DashboardLayout>
             <div className="max-w-3xl mx-auto space-y-8">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between animate-slide-up">
                     <h1 className="section-heading">Mentor Requests</h1>
                     {pending.length > 0 && (
-                        <span className="badge-amber">{pending.length} pending</span>
+                        <span className="badge-amber animate-pulse-slow">{pending.length} pending</span>
                     )}
                 </div>
 
@@ -44,60 +44,107 @@ const MentorRequests = () => {
                     ? <div className="flex justify-center py-20"><Loader size="lg" /></div>
                     : requests.length === 0
                         ? (
-                            <div className="glass-card p-12 text-center">
-                                <p className="text-4xl mb-3">🤝</p>
-                                <p className="text-white font-semibold">No mentor requests yet</p>
-                                <p className="text-slate-400 text-sm mt-1">Make sure your profile shows you're available to mentor students.</p>
+                            <div className="glass-card p-14 text-center animate-slide-up">
+                                <div className="text-5xl mb-4 animate-float inline-block">🤝</div>
+                                <p className="text-white font-bold text-lg font-display">No mentor requests yet</p>
+                                <p className="text-slate-400 text-sm mt-2 max-w-xs mx-auto">
+                                    Make sure your profile shows you're available to mentor students.
+                                </p>
                             </div>
                         )
                         : (
                             <>
+                                {/* Pending Requests */}
                                 {pending.length > 0 && (
                                     <div className="space-y-4">
-                                        <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Pending ({pending.length})</h2>
-                                        {pending.map((req) => (
-                                            <div key={req.id} className="glass-card p-6 border border-amber-500/20 animate-fade-in">
-                                                <div className="flex items-start justify-between gap-4 mb-3">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="h-10 w-10 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-sm">S</div>
-                                                        <div>
-                                                            <p className="font-semibold text-white">{req.studentId}</p>
-                                                            <p className="text-xs text-slate-400">{new Date(req.createdAt?.seconds * 1000 || req.createdAt).toLocaleDateString()}</p>
+                                        <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest
+                                                      flex items-center gap-2">
+                                            <div className="h-1.5 w-1.5 rounded-full bg-amber-400 animate-pulse-slow" />
+                                            Pending ({pending.length})
+                                        </h2>
+                                        <div className="stagger-children space-y-4">
+                                            {pending.map((req) => (
+                                                <div key={req.id}
+                                                     className="glass-card p-6 border border-amber-500/15
+                                                               hover:border-amber-500/30 transition-all duration-300
+                                                               hover:-translate-y-0.5 hover:shadow-card-hover">
+                                                    <div className="flex items-start justify-between gap-4 mb-4">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="h-11 w-11 rounded-full bg-purple-500/15
+                                                                           border border-purple-500/25 text-purple-400
+                                                                           flex items-center justify-center font-bold
+                                                                           text-sm">S</div>
+                                                            <div>
+                                                                <p className="font-semibold text-white">{req.studentId}</p>
+                                                                <p className="text-xs text-slate-400">
+                                                                    {new Date(req.createdAt?.seconds * 1000 || req.createdAt).toLocaleDateString()}
+                                                                </p>
+                                                            </div>
                                                         </div>
+                                                        <span className="badge-amber">Pending</span>
                                                     </div>
-                                                    <span className="badge-amber">Pending</span>
-                                                </div>
-                                                <p className="text-sm text-slate-300 bg-surface-border/30 rounded-xl p-3 mb-4 leading-relaxed">{req.message}</p>
-                                                {req.topics?.length > 0 && (
-                                                    <div className="flex flex-wrap gap-1.5 mb-4">
-                                                        <span className="text-xs text-slate-500">Topics:</span>
-                                                        {req.topics.map((t) => <span key={t} className="badge-indigo">{t}</span>)}
+
+                                                    <div className="text-sm text-slate-300 bg-surface-elevated/40
+                                                                   rounded-xl p-4 mb-4 leading-relaxed
+                                                                   border border-surface-border/20">
+                                                        {req.message}
                                                     </div>
-                                                )}
-                                                <div className="flex gap-3">
-                                                    <button disabled={acting === req.id} onClick={() => respond(req.id, 'accepted')}
-                                                        className="btn-primary flex-1">{acting === req.id ? '…' : '✓ Accept'}</button>
-                                                    <button disabled={acting === req.id} onClick={() => respond(req.id, 'rejected')}
-                                                        className="flex-1 py-2.5 rounded-xl border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 transition-colors text-sm font-semibold">
-                                                        ✕ Decline
-                                                    </button>
+
+                                                    {req.topics?.length > 0 && (
+                                                        <div className="flex flex-wrap items-center gap-1.5 mb-5">
+                                                            <span className="text-xs text-slate-500 font-medium">Topics:</span>
+                                                            {req.topics.map((t) => (
+                                                                <span key={t} className="badge-indigo">{t}</span>
+                                                            ))}
+                                                        </div>
+                                                    )}
+
+                                                    <div className="flex gap-3">
+                                                        <button disabled={acting === req.id}
+                                                                onClick={() => respond(req.id, 'accepted')}
+                                                                className="btn-primary flex-1">
+                                                            {acting === req.id ? (
+                                                                <span className="flex items-center gap-2">
+                                                                    <span className="h-4 w-4 border-2 border-white/30
+                                                                                   border-t-white rounded-full animate-spin" />
+                                                                </span>
+                                                            ) : '✓ Accept'}
+                                                        </button>
+                                                        <button disabled={acting === req.id}
+                                                                onClick={() => respond(req.id, 'rejected')}
+                                                                className="btn-danger flex-1">
+                                                            ✕ Decline
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            ))}
+                                        </div>
                                     </div>
                                 )}
 
+                                {/* Past Requests */}
                                 {responded.length > 0 && (
                                     <div className="space-y-3">
-                                        <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Past Requests ({responded.length})</h2>
+                                        <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                                            Past Requests ({responded.length})
+                                        </h2>
                                         {responded.map((req) => (
-                                            <div key={req.id} className="glass-card p-5 flex items-start gap-4 opacity-70">
-                                                <div className="h-9 w-9 rounded-full bg-surface-border flex items-center justify-center font-bold text-slate-400 text-sm">S</div>
+                                            <div key={req.id}
+                                                 className="glass-card p-5 flex items-start gap-4
+                                                           opacity-60 hover:opacity-80
+                                                           transition-all duration-300">
+                                                <div className="h-10 w-10 rounded-full bg-surface-elevated
+                                                               border border-surface-border/40 flex items-center
+                                                               justify-center font-bold text-slate-400 text-sm">S</div>
                                                 <div className="flex-1 min-w-0">
                                                     <p className="text-sm text-slate-300 truncate">{req.message}</p>
-                                                    <p className="text-xs text-slate-500 mt-0.5">{new Date(req.createdAt?.seconds * 1000 || req.createdAt).toLocaleDateString()}</p>
+                                                    <p className="text-xs text-slate-500 mt-0.5">
+                                                        {new Date(req.createdAt?.seconds * 1000 || req.createdAt).toLocaleDateString()}
+                                                    </p>
                                                 </div>
-                                                <span className={req.status === 'accepted' ? 'badge-green' : 'badge-rose'}>{req.status}</span>
+                                                <span className={req.status === 'accepted' ? 'badge-green' : 'badge-rose'}>
+                                                    {req.status}
+                                                </span>
                                             </div>
                                         ))}
                                     </div>
