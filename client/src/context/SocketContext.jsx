@@ -15,7 +15,7 @@ export const SocketProvider = ({ children }) => {
         if (!token || !user) return
 
         // Connect to Socket.io server with JWT
-        socketRef.current = io(import.meta.env.VITE_SOCKET_URL || window.location.origin, {
+        socketRef.current = io(import.meta.env.VITE_API_URL || import.meta.env.VITE_SOCKET_URL || window.location.origin, {
             auth: { token },
             transports: ['websocket'],
         })
