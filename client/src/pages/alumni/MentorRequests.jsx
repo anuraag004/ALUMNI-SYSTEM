@@ -1,21 +1,52 @@
 // src/pages/alumni/MentorRequests.jsx
 import { useState, useEffect } from 'react'
 import DashboardLayout from '../../components/common/DashboardLayout'
-import { mentorAPI } from '../../services/api'
+import { mentorAPI, usersAPI } from '../../services/api'
 import toast from 'react-hot-toast'
 import Loader from '../../components/common/Loader'
 
 const MentorRequests = () => {
     const [requests, setRequests] = useState([])
+    const [students, setStudents] = useState({})
     const [loading, setLoading] = useState(true)
     const [acting, setActing] = useState(null)
 
     useEffect(() => {
-        mentorAPI.getRequests()
-            .then((res) => setRequests(res.data || []))
-            .catch(() => toast.error('Could not load requests'))
-            .finally(() => setLoading(false))
+        const fetchRequests = async () => {
+            try {
+                const res = await mentorAPI.getRequests()
+                const reqs = res.data || []
+                setRequests(reqs)
+
+                // Fetch student profiles for each unique studentId
+                const uniqueIds = [...new Set(reqs.map((r) => r.studentId))]
+                const profiles = {}
+                await Promise.all(
+                    uniqueIds.map(async (uid) => {
+                        try {
+                            const userRes = await usersAPI.getUser(uid)
+                            profiles[uid] = userRes.data || { displayName: uid }
+                        } catch {
+                            profiles[uid] = { displayName: uid }
+                        }
+                    })
+                )
+                setStudents(profiles)
+            } catch {
+                toast.error('Could not load requests')
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchRequests()
     }, [])
+
+    const getStudentName = (studentId) => students[studentId]?.displayName || studentId
+    const getStudentInitial = (studentId) => {
+        const name = students[studentId]?.displayName
+        return name ? name[0].toUpperCase() : 'S'
+    }
+    const getStudentDept = (studentId) => students[studentId]?.department || ''
 
     const respond = async (id, status) => {
         setActing(id)
@@ -73,9 +104,12 @@ const MentorRequests = () => {
                                                             <div className="h-11 w-11 rounded-full bg-purple-500/15
                                                                            border border-purple-500/25 text-purple-400
                                                                            flex items-center justify-center font-bold
-                                                                           text-sm">S</div>
+                                                                           text-sm">{getStudentInitial(req.studentId)}</div>
                                                             <div>
-                                                                <p className="font-semibold text-white">{req.studentId}</p>
+                                                                <p className="font-semibold text-white">{getStudentName(req.studentId)}</p>
+                                                                {getStudentDept(req.studentId) && (
+                                                                    <p className="text-xs text-brand-400">{getStudentDept(req.studentId)}</p>
+                                                                )}
                                                                 <p className="text-xs text-slate-400">
                                                                     {new Date(req.createdAt?.seconds * 1000 || req.createdAt).toLocaleDateString()}
                                                                 </p>
@@ -135,8 +169,9 @@ const MentorRequests = () => {
                                                            transition-all duration-300">
                                                 <div className="h-10 w-10 rounded-full bg-surface-elevated
                                                                border border-surface-border/40 flex items-center
-                                                               justify-center font-bold text-slate-400 text-sm">S</div>
+                                                               justify-center font-bold text-slate-400 text-sm">{getStudentInitial(req.studentId)}</div>
                                                 <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-medium text-white">{getStudentName(req.studentId)}</p>
                                                     <p className="text-sm text-slate-300 truncate">{req.message}</p>
                                                     <p className="text-xs text-slate-500 mt-0.5">
                                                         {new Date(req.createdAt?.seconds * 1000 || req.createdAt).toLocaleDateString()}

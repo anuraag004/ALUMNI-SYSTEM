@@ -67,7 +67,6 @@ const Chat = () => {
         e.preventDefault()
         if (!text.trim() || !activeConv) return
         sendMessage(activeConv.id, text.trim())
-        setMessages((prev) => [...prev, { id: Date.now(), senderId: user.uid, text: text.trim(), sentAt: new Date() }])
         setText('')
     }
 

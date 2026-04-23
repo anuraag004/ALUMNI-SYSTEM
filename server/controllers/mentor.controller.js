@@ -33,7 +33,7 @@ exports.sendRequest = async (req, res, next) => {
         // Check mentor exists and is available
         const mentor = await firestoreService.getDocument("users", mentorId);
         if (!mentor || mentor.role !== "alumni") return errorResponse(res, 404, "Mentor not found");
-        if (!mentor.isMentorAvailable) return errorResponse(res, 400, "Mentor is not accepting requests");
+        // if (!mentor.isMentorAvailable) return errorResponse(res, 400, "Mentor is not accepting requests");
 
         const reqId = uuidv4();
         const mentorRequest = {

@@ -26,7 +26,7 @@ const apiLimiter = rateLimit({
 /** AI endpoint limiter — heavier computation */
 const aiLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour
-    max: 15,
+    max: 100,
     standardHeaders: true,
     legacyHeaders: false,
     message: { success: false, message: "AI request limit reached. Try again in 1 hour." },

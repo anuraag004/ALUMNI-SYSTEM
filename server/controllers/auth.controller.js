@@ -43,7 +43,7 @@ exports.register = async (req, res, next) => {
             linkedIn: "",
             skills: [],
             isVerified: role === "student", // students auto-verified; alumni need admin approval
-            isMentorAvailable: false,
+            isMentorAvailable: true,
             mentorCapacity: 0,
             currentCompany: null,
             currentRole: null,

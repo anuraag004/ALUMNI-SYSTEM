@@ -48,10 +48,10 @@ const AlumniCard = ({ alumni, onContact, onMentor }) => (
                 <div className="flex gap-2 mt-4">
                     <button onClick={() => onContact(alumni)}
                             className="btn-ghost text-xs px-3 py-1.5">💬 Message</button>
-                    {alumni.isMentorAvailable && (
+                    {/* {alumni.isMentorAvailable && ( */}
                         <button onClick={() => onMentor(alumni)}
                                 className="btn-primary text-xs px-3 py-1.5">🎯 Request Mentor</button>
-                    )}
+                    {/* )} */}
                     {alumni.linkedIn && (
                         <a href={alumni.linkedIn} target="_blank" rel="noopener noreferrer"
                            className="btn-ghost text-xs px-3 py-1.5">LinkedIn ↗</a>
