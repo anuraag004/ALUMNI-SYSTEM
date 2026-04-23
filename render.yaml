@@ -2,6 +2,7 @@ services:
   - type: web
     name: capstone-alumni-server
     env: node
+    plan: free
     buildCommand: cd server && npm install
     startCommand: cd server && npm start
     envVars:
