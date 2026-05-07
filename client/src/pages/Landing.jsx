@@ -11,12 +11,6 @@ const features = [
     { icon: '📊', title: 'Admin Analytics', desc: 'Full visibility into platform growth, engagement, and activity.', color: 'from-violet-500/20 to-indigo-500/10' },
 ]
 
-const stats = [
-    ['5,000+', 'Alumni Network'],
-    ['1,200+', 'Active Students'],
-    ['300+', 'Jobs Posted'],
-    ['92%', 'Match Accuracy'],
-]
 
 const Landing = () => {
     const { user } = useAuth()
@@ -102,22 +96,6 @@ const Landing = () => {
                 </div>
             </div>
 
-            {/* ── Stats strip ────────────────────────────────────────── */}
-            <div className="relative z-10 border-y border-surface-border/40
-                           bg-surface-card/30 backdrop-blur-md">
-                <div className="max-w-5xl mx-auto px-6 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
-                    {stats.map(([num, label], i) => (
-                        <div key={label}
-                             className="text-center group cursor-default animate-slide-up"
-                             style={{ animationDelay: `${300 + i * 80}ms` }}>
-                            <p className="text-3xl md:text-4xl font-extrabold gradient-text
-                                         group-hover:scale-110 transition-transform duration-300
-                                         font-display">{num}</p>
-                            <p className="text-slate-400 text-sm mt-1.5 font-medium">{label}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
 
             {/* ── Features grid ──────────────────────────────────────── */}
             <div className="relative z-10 max-w-6xl mx-auto px-6 py-28">

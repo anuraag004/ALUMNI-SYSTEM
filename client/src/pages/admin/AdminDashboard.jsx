@@ -29,6 +29,15 @@ const AdminDashboard = () => {
         } catch { toast.error('Failed to verify') }
     }
 
+    const handleMakeAdmin = async (uid) => {
+        if (!confirm('Promote this user to Admin?')) return
+        try {
+            await adminAPI.changeRole(uid, { role: 'admin' })
+            setUsers((prev) => prev.map((u) => u.uid === uid ? { ...u, role: 'admin' } : u))
+            toast.success('User promoted to admin')
+        } catch { toast.error('Failed to update role') }
+    }
+
     const handleDelete = async (uid) => {
         if (!confirm('Delete this user permanently?')) return
         try {
@@ -189,6 +198,13 @@ const AdminDashboard = () => {
                                                             className="text-xs text-emerald-400 hover:text-emerald-300
                                                                        font-semibold hover:underline transition-all duration-200">
                                                             Verify
+                                                        </button>
+                                                    )}
+                                                    {u.role !== 'admin' && (
+                                                        <button onClick={() => handleMakeAdmin(u.uid)}
+                                                            className="text-xs text-brand-400 hover:text-brand-300
+                                                                       font-semibold hover:underline transition-all duration-200">
+                                                            Make Admin
                                                         </button>
                                                     )}
                                                     <button onClick={() => handleDelete(u.uid)}

@@ -21,6 +21,9 @@ import MentorSearch from './pages/student/MentorSearch'
 import Chat from './pages/shared/Chat'
 import PostJob from './pages/alumni/PostJob'
 import MentorRequests from './pages/alumni/MentorRequests'
+import UserProfile from './pages/shared/UserProfile'
+import CreateEvent from './pages/alumni/CreateEvent'
+
 
 const Unauth = () => (
     <div className="min-h-screen flex flex-col items-center justify-center text-center px-4">
@@ -56,7 +59,9 @@ const App = () => (
                     {/* Alumni-only */}
                     <Route path="/alumni-dashboard" element={<ProtectedRoute roles={['alumni']}><AlumniDashboard /></ProtectedRoute>} />
                     <Route path="/jobs/post" element={<ProtectedRoute roles={['alumni', 'admin']}><PostJob /></ProtectedRoute>} />
+                    <Route path="/events/create" element={<ProtectedRoute roles={['alumni', 'admin']}><CreateEvent /></ProtectedRoute>} />
                     <Route path="/mentor/requests" element={<ProtectedRoute roles={['alumni']}><MentorRequests /></ProtectedRoute>} />
+
 
                     {/* Admin-only */}
                     <Route path="/admin" element={<ProtectedRoute roles={['admin']}><AdminDashboard /></ProtectedRoute>} />
@@ -67,6 +72,7 @@ const App = () => (
                     <Route path="/jobs" element={<ProtectedRoute><JobBoard /></ProtectedRoute>} />
                     <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
                     <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
+                    <Route path="/users/:uid" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
 
                     {/* Fallback */}
                     <Route path="*" element={<Navigate to="/" replace />} />

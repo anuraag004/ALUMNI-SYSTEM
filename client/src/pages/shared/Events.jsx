@@ -92,7 +92,7 @@ const Events = () => {
 
                                         {ev.venue && <p className="text-xs text-slate-500 mb-3">📍 {ev.venue}</p>}
 
-                                        {ev.maxAttendees && (
+                                        {ev.maxAttendees ? (
                                             <div className="mb-5">
                                                 <div className="flex justify-between text-xs text-slate-500 mb-1.5">
                                                     <span>{ev.registrations?.length || 0} registered</span>
@@ -103,7 +103,13 @@ const Events = () => {
                                                          style={{ width: `${Math.min(((ev.registrations?.length || 0) / ev.maxAttendees) * 100, 100)}%` }} />
                                                 </div>
                                             </div>
-                                        )}
+                                        ) : (user?.role === 'admin' || user?.role === 'alumni') ? (
+                                            <div className="mb-5 flex items-center gap-2">
+                                                <span className="text-xs font-semibold px-2.5 py-1 bg-surface-elevated rounded-lg text-brand-300 border border-surface-border">
+                                                    👥 {ev.registrations?.length || 0} registered
+                                                </span>
+                                            </div>
+                                        ) : null}
 
                                         {isRegistered ? (
                                             <span className="badge-green w-full text-center block py-2.5 text-sm">

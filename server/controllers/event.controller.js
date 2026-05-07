@@ -10,8 +10,13 @@ const firestoreService = require("../services/firestore.service");
 exports.listEvents = async (req, res, next) => {
     try {
         const { page = 1, limit = 10 } = req.query;
-        const snapshot = await db.collection("events").orderBy("date", "asc").get();
+        const snapshot = await db.collection("events").get();
         const events = snapshot.docs.map((d) => d.data());
+        events.sort((a, b) => {
+            const dateA = a.date?.seconds ? new Date(a.date.seconds * 1000) : new Date(a.date);
+            const dateB = b.date?.seconds ? new Date(b.date.seconds * 1000) : new Date(b.date);
+            return dateA - dateB;
+        });
         const total = events.length;
         const offset = (page - 1) * limit;
         return paginatedResponse(res, events.slice(offset, offset + parseInt(limit, 10)), total, parseInt(page), parseInt(limit));
